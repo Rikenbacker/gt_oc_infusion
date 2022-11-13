@@ -1,0 +1,21 @@
+[
+	{ "name": "Test",
+		"input": [{"name": "Quicksilver Block", "size": 1},{"name": "Stone Bricks", "size": 2},{"name": "Muffler Upgrade", "size": 1}],
+		"aspects": [{"name": "Perditio", "size": 64},{"name": "Motus", "size": 128}]},
+	{ "name": "Ritual Stone",
+		"input": [{"name": "Imperfect Ritual Stone", "size": 1},{"name": "Terrae", "size": 2},{"name": "Obsidian", "size": 4},{"name": "Reinforced Slate", "size": 4}],
+		"aspects": [{"name": "Terra", "size": 24},{"name": "Ignis", "size": 18},{"name": "Tenebrae", "size": 12},{"name": "Praecantatio", "size": 6},{"name": "Aer", "size": 3}]
+	},
+	{ "name": "Ichor",
+		"input": [{"name": "Nether Star", "size": 1},{"name": "Flawless Diamond", "size": 1},{"name": "Nether Shard", "size": 1},{"name": "Eye of Ender", "size": 1},{"name": "Ender Shard", "size": 1}],
+		"aspects": [{"name": "Spiritus", "size": 64},{"name": "Humanus", "size": 32},{"name": "Lux", "size": 32},{"name": "Alienis", "size": 16},{"name": "Ordo", "size": 16}]
+	},
+	{ "name": "Silverwood rod",
+		"input": [{"name": "Silverwood Log", "size": 1},{"name": "Air Crystal Cluster", "size": 1},{"name": "Fire Crystal Cluster", "size": 1},{"name": "Water Crystal Cluster", "size": 1},{"name": "Earth Crystal Cluster", "size": 1},{"name": "Order Crystal Cluster", "size": 1},{"name": "Entropy Crystal Cluster", "size": 1},{"name": "Mixed Crystal Cluster", "size": 1}],
+		"aspects": [{"name": "Aer", "size": 48},{"name": "Aqua", "size": 48},{"name": "Ignis", "size": 48},{"name": "Ordo", "size": 48},{"name": "Perditio", "size": 48},{"name": "Praecantatio", "size": 48},{"name": "Terra", "size": 48}]
+	},
+	{ "name": "Charged Void metal Cap",
+		"input": [{"name": "Inert Void metal Cap", "size": 1},{"name": "Salis Mundus", "size": 3},{"name": "Void Seed", "size": 3}],
+		"aspects": [{"name": "Alienis", "size": 32},{"name": "Auram", "size": 32},{"name": "Potentia", "size": 32},{"name": "Vacuos", "size": 32}]
+	}	
+]
