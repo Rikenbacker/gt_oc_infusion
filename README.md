@@ -13,3 +13,11 @@ a) settings.redstonePiedestalSide сторона откуда выдаётся �
 
 в recipes.json описаны рецепты которые программа умеет обрабатывать.
 Программа старается заказать в МЕ те аспекты которых нет в системе. Если рецепта нет и аспектов не хватает, то будет ждать аспекта (ошибка будет на экране)
+
+Скачать можно имея internet card при помощи команд:
+wget https://raw.githubusercontent.com/Rikenbacker/gt_oc_infusion/main/json.lua json.lua
+wget https://raw.githubusercontent.com/Rikenbacker/gt_oc_infusion/main/ra_gui.lua ra_gui.lua
+wget https://raw.githubusercontent.com/Rikenbacker/gt_oc_infusion/main/recipes.json recipes.json
+wget https://raw.githubusercontent.com/Rikenbacker/gt_oc_infusion/main/runic_matrix.lua runic_matrix.lua
+
+Запуск ./runic_matrix.lua
