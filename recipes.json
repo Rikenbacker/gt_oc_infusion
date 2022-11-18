@@ -1,7 +1,7 @@
 [
 	{ "name": "Test",
-		"input": [{"name": "Quicksilver Block", "size": 1},{"name": "Stone Bricks", "size": 2},{"name": "Muffler Upgrade", "size": 1}],
-		"aspects": [{"name": "Perditio", "size": 64},{"name": "Motus", "size": 128}]},
+		"input": [{"name": "Blood Rune", "size": 2}],
+		"aspects": [{"name": "Perditio", "size": 64},{"name": "Motus", "size": 128}, {"name": "Limus", "size": 20}]},
 	{ "name": "Ritual Stone",
 		"input": [{"name": "Imperfect Ritual Stone", "size": 1},{"name": "Terrae", "size": 2},{"name": "Obsidian", "size": 4},{"name": "Reinforced Slate", "size": 4}],
 		"aspects": [{"name": "Terra", "size": 24},{"name": "Ignis", "size": 18},{"name": "Tenebrae", "size": 12},{"name": "Praecantatio", "size": 6},{"name": "Aer", "size": 3}]
@@ -17,5 +17,17 @@
 	{ "name": "Charged Void metal Cap",
 		"input": [{"name": "Inert Void metal Cap", "size": 1},{"name": "Salis Mundus", "size": 3},{"name": "Void Seed", "size": 3}],
 		"aspects": [{"name": "Alienis", "size": 32},{"name": "Auram", "size": 32},{"name": "Potentia", "size": 32},{"name": "Vacuos", "size": 32}]
+	},
+	{ "name": "Rune of the Orb",
+		"input": [{"name": "Demonic Blood Stone", "size": 3},{"name": "Demonic Slate", "size": 4},{"name": "Potentia", "size": 2},{"name": "Empty Core", "size": 2}],
+		"aspects": [{"name": "Potentia", "size": 32},{"name": "Victus", "size": 24},{"name": "Motus", "size": 16},{"name": "Lucrum", "size": 8},{"name": "Praecantatio", "size": 4}]
+	},
+	{ "name": "Master Ritual Stone",
+		"input": [{"name": "Ritual Stone", "size": 1},{"name": "Terrae", "size": 2},{"name": "Obsidian", "size": 4},{"name": "Reinforced Blood Stone", "size": 4}],
+		"aspects": [{"name": "Terra", "size": 36},{"name": "Ignis", "size": 24},{"name": "Tenebrae", "size": 16},{"name": "Praecantatio", "size": 16},{"name": "Aer", "size": 8},{"name": "Cognitio", "size": 8}]
+	},
+	{ "name": "Crystal Cluster",
+		"input": [{"name": "Etherial Blood Stone", "size": 1},{"name": "Life Shard", "size": 5},{"name": "Soul Shard", "size": 5}],
+		"aspects": [{"name": "Potentia", "size": 72},{"name": "Victus", "size": 64},{"name": "Spiritus", "size": 64},{"name": "Praecantatio", "size": 32},{"name": "Tenebrae", "size": 32},{"name": "Alienis", "size": 16},{"name": "Cognitio", "size": 16}]
 	}	
 ]
