@@ -2,24 +2,49 @@ local component = require("component")
 local sides = require("sides")
 local event = require("event")
 local json = require('json')
+local thread = require("thread")
+local raGui = require("ra_gui")
+local gpu = component.gpu
 
 local settings = {
-  refreshInterval = 1.0, -- Время обновления в секундах
-  refreshPiedistalInterval = 1, -- Время обновления в секундах
+  refreshInterval = 1.0, -- Время обновления в секундах основного цикла
+  refreshPiedistalInterval = 1, -- Время обновления сундука с материалом для инфузии в секундах. 
+  refreshMonitorInterval = 0.4,  -- Время обновления экрана
   inputSide = sides.north,
   altarSide = sides.top,
   piedestalSide = sides.south,
   outputSide = sides.down,
   redstonePiedestalSide = sides.south,
   redstoneInfusionSide = sides.north,
-  recipesFileName = "recipes.json"
+  recipesFileName = "recipes.json",
+  minimumVisCount = 10
 }
 
 local stages = {
-	waitInput = 1,
-	waitAspects = 2,
-	transferItems = 3,
-	waitInfusion = 4
+	waitInput = "Waiting",
+	waitAspects = "Aspects control",
+	transferItems = "Item placing",
+	waitInfusion = "Infusion"
+}
+
+local status = {
+	stage = stages.waitInput,	-- Теущая стадия обработки
+	recipeName = nil,			-- Имя опознаного рецепта (только для отображения)
+	recipe = nil,				-- Распознаный рецепт
+	inputItems = {},			-- Набор входных предметов
+	itemName = nil,				-- Имя предмета на пьедестале
+	message = nil,				-- Сообщение для отображения
+	crafting = nil,				-- Выполняемый рецепт
+	craftingName = nil,			-- Описание выполняемого рецепта
+	shootDown = false			-- Флаг завершения потока
+}
+
+local textLines = {
+	"Current status: $stage:s,%s$",
+	"Recipe: $recipeName:s,%s$",
+	"$message$",
+	"$craftingName$",
+	"F"
 }
 
 local Recipes = {}
@@ -98,21 +123,48 @@ function Tools.new()
 		return items
 	end
 	
+	function obj.craftingAspect(aspect, count)
+		if status.craft ~= nil then
+			if status.craft.isCanceled() == true then 
+				status.craftingName = "Can't craft " .. aspect .. ". Recipe canceled."
+				status.craft = nil
+			elseif status.craft.isDone() == true then 
+				status.craftingName = nil
+				status.craft = nil
+			end
+		else
+			local craft = obj[interface].getCraftables({label = aspect, name = "thaumicenergistics:crafting.aspect"})
+			if craft[1] == nil then
+				status.craftingName = "Can't craft " .. aspect .. ". No recipe."
+				return nil
+			end
+		
+			status.craft = craft[1].request(count)
+			status.craftingName = "Crafting " .. aspect .. " (" .. count .. ")"
+		end
+	end
+	
 	function obj.checkAspects(recipe)
 		local aspects = obj[interface].getEssentiaInNetwork()
 		
 		local fullMatch = true
 		for i = 1, #recipe.aspects do
 			local match = false
+			local count = recipe.aspects[i].size
 			for j = 1, #aspects do
-				if aspects[j].label == recipe.aspects[i].name .. " Gas" and aspects[j].amount >= recipe.aspects[i].size then
-					match = true
+				if aspects[j].label == recipe.aspects[i].name .. " Gas" then
+					if aspects[j].amount >= recipe.aspects[i].size then
+						match = true
+					else
+						count = recipe.aspects[i].size - aspects[j].amount
+					end
 				end
 			end
 			
 			if match == false then
 				fullMatch = false
-				print("Not enought:", recipe.aspects[i].name)
+				status.message = "Not enought: " .. recipe.aspects[i].name .. " (" .. count .. ")"
+				obj.craftingAspect(recipe.aspects[i].name, count)
 			end
 		end
 
@@ -159,7 +211,7 @@ function Tools.new()
 				isDone = true
             end	
 		else 
-			print("Error: Result is dissapeared")
+			status.message = "Error: Result is dissapeared"
 			isDone = true
 		end
 		
@@ -185,6 +237,49 @@ function Tools.new()
 	end	
 	
 	return obj
+end
+
+function mainLoop(tools, recipes)
+    while status.shootDown == false do
+		if status.stage == stages.waitInput then
+			status.inputItems = tools.getInput()
+			if #status.inputItems > 0 then
+				status.recipe = recipes.findRecipe(status.inputItems)
+				if status.recipe == nil then
+					status.message = "Error: Recipe not found!"
+				else
+					status.recipeName = status.recipe.name
+					status.stage = stages.waitAspects
+				end
+			else 
+				status.message = nil
+			end
+		end
+		
+		if status.stage == stages.waitAspects then
+			if tools.checkAspects(status.recipe) == true then
+				status.stage = stages.transferItems
+				status.crafting = nil
+				status.message = nil
+				status.craftingName = nil
+			end
+		end	
+		
+		if status.stage == stages.transferItems then
+			status.itemName = tools.transferItemsToAltar(status.inputItems)
+			status.stage = stages.waitInfusion
+		end
+		
+		if status.stage == stages.waitInfusion then
+			if tools.waitForInfusion(status.itemName) == true then
+				status.stage = stages.waitInput
+				status.recipe = nil
+				status.message = nil
+				status.recipeName = nil
+			end
+		end
+		os.sleep(settings.refreshInterval)
+    end
 end
 
 function main()
@@ -213,49 +308,22 @@ function main()
 	end	
 	
 	print("Recipes loaded:", recipes.getCount())
-	print("Ready to work!")
 	
-	local stage = stages.waitInput
-	local recipe = nil
-	local inputItems = {}
-	local itemName = nil
+	thread.create(
+      function()
+        mainLoop(tools, recipes)
+      end
+    ):detach()
+	
+	local screen = ScreenController.new(gpu, textLines)
 	
 	repeat
-		if stage == stages.waitInput then
-			inputItems = tools.getInput()
-			if #inputItems > 0 then
-				recipe = recipes.findRecipe(inputItems)
-				if recipe == nil then
-					print("Error: Recipe not found. Check input chest or add new recipe!")
-				else
-					print("New job:", recipe.name)
-					stage = stages.waitAspects
-				end
-			end
-		end
-		
-		if stage == stages.waitAspects then
-			if tools.checkAspects(recipe) == true then
-				print("Aspects successfully checked")
-				stage = stages.transferItems
-			end
-		end	
-		
-		if stage == stages.transferItems then
-			itemName = tools.transferItemsToAltar(inputItems)
-			print("Item placed")
-			stage = stages.waitInfusion
-		end
-		
-		if stage == stages.waitInfusion then
-			if tools.waitForInfusion(itemName) == true then
-				print("Infusion Done!")
-				stage = stages.waitInput
-			end
-		end
-	until event.pull(settings.refreshInterval, "interrupted")
+		screen.render(status)
+	until event.pull(settings.refreshMonitorInterval, "interrupted")
+	
+	status.shootDown = true
+	screen.resetScreen()
+	
 end
 
 main()
---local interface = component.proxy(comp.get(batBuffersConfigArray[i].key))
---component.me_interface.getItemsInNetwork({ aspect = 'Perditio' })
