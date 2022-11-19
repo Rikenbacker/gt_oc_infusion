@@ -1,3 +1,8 @@
+-- GUI OC
+-- Author: CAHCAHbl4
+-- Edit: Rikenbacker
+-- License: MIT
+
 local raGUI = { _version = "0.0.1" }
 
 local palette = {
