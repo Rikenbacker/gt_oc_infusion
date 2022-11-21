@@ -13,9 +13,10 @@
  - settings.outputSide сундук куда перекладывается результат инфузии
  - redstone I/O
  - settings.redstonePiedestalSide сторона откуда выдаётся сигнал на расстановку вещей по пьедесталам
- - settings.redstoneInfusionSide сторона откуда выдаётся сигнал на старт инфузии (должен приниматься на Indusion Claw)
+ - settings.redstoneInfusionSide сторона откуда выдаётся сигнал на старт инфузии (должен приниматься на Indusion Claw)  
  Все параметры из settings настраиваемые прямо в коде.
 ## Рецепты recipes.json
+Рецепты в поставке конечно же не полные и требуют ручного заполнения под себя. Пример рецепта:
 ```json
 [
   { 
@@ -51,9 +52,9 @@ wget https://raw.githubusercontent.com/Rikenbacker/gt_oc_infusion/main/runic_mat
 Внешний вид алтаря:
 ![alt text](https://github.com/Rikenbacker/gt_oc_infusion/blob/main/.readme.img/2022-11-21_20-59-49.png?raw=true)
 Основные элементы на скриншоте:
-1. Infusion Claw с палочкой внутри прямо нат рунической матрицей (он же стартер)
-2. Блок Gregtech Redstone Receiver (External) cover направленный прямо на стартер. Соединён и Transmiter из п. 9
-3. Infusion Provider соединённый с МЕ сетью хранящий аспекты и рецепты с их созданием.
+1. Infusion Claw с палочкой внутри прямо над рунической матрицей (он же стартер)
+2. Блок Gregtech с Redstone Receiver (External) cover направленный прямо на стартер. Соединён с Transmiter из п. 9
+3. Infusion Provider соединённый с МЕ сетью хранящий аспекты и рецепты с их созданием.  
 Вид алтаря без стабилизации и украшений
 ![alt text](https://github.com/Rikenbacker/gt_oc_infusion/blob/main/.readme.img/2022-11-21_21-11-21.png?raw=true)
 4. Как видно все пьедесталы за исключением центрального соеденены кондуитами раздающими предметы по сигналу красного камня.
