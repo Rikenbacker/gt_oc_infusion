@@ -43,8 +43,7 @@ local textLines = {
 	"Current status: $stage:s,%s$",
 	"Recipe: $recipeName:s,%s$",
 	"$message$",
-	"$craftingName$",
-	"F"
+	"$craftingName$"
 }
 
 local Recipes = {}
@@ -163,7 +162,7 @@ function Tools.new()
 			
 			if match == false then
 				fullMatch = false
-				status.message = "Not enought: " .. recipe.aspects[i].name .. " (" .. count .. ")"
+				status.message = "&yellow;Not enought: " .. recipe.aspects[i].name .. " (" .. count .. ")"
 				obj.craftingAspect(recipe.aspects[i].name, count)
 			end
 		end
@@ -246,9 +245,9 @@ function mainLoop(tools, recipes)
 			if #status.inputItems > 0 then
 				status.recipe = recipes.findRecipe(status.inputItems)
 				if status.recipe == nil then
-					status.message = "Error: Recipe not found!"
+					status.message = "&red;Error: Recipe not found!"
 				else
-					status.recipeName = status.recipe.name
+					status.recipeName = "&green;" .. status.recipe.name
 					status.stage = stages.waitAspects
 				end
 			else 
