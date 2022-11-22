@@ -7,8 +7,8 @@ local raGui = require("ra_gui")
 local gpu = component.gpu
 
 local settings = {
-  refreshInterval = 1.0, -- Время обновления в секундах основного цикла
-  refreshPiedistalInterval = 1, -- Время обновления сундука с материалом для инфузии в секундах. 
+  refreshInterval = 1.0,         -- Время обновления в секундах основного цикла
+  refreshPiedistalInterval = 1,  -- Время обновления сундука с материалом для инфузии в секундах. 
   refreshMonitorInterval = 0.4,  -- Время обновления экрана
   inputSide = sides.north,
   altarSide = sides.top,
@@ -31,11 +31,11 @@ local status = {
     stage = stages.waitInput,    -- Теущая стадия обработки
     recipeName = nil,            -- Имя опознаного рецепта (только для отображения)
     recipe = nil,                -- Распознаный рецепт
-    inputItems = {},            -- Набор входных предметов
-    itemName = nil,                -- Имя предмета на пьедестале
-    message = nil,                -- Сообщение для отображения
-    crafting = nil,                -- Выполняемый рецепт
-    craftingName = nil,            -- Описание выполняемого рецепта
+    inputItems = {},             -- Набор входных предметов
+    itemName = nil,              -- Имя предмета на пьедестале
+    message = nil,               -- Сообщение для отображения
+    crafting = nil,              -- Выполняемый рецепт
+    craftingName = nil,          -- Описание выполняемого рецепта
     shootDown = false            -- Флаг завершения потока
 }
 
