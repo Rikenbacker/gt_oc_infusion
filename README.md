@@ -20,28 +20,40 @@
 ```json
 [
   { 
-    "name": "Master Ritual Stone",
-    "input": [{"name": "Ritual Stone", "size": 1},{"name": "Terrae", "size": 2},{"name": "Obsidian", "size": 4},{"name": "Reinforced Blood Stone", "size": 4}],
-    "aspects": [{"name": "Terra", "size": 36},{"name": "Ignis", "size": 24},{"name": "Tenebrae", "size": 16},{"name": "Praecantatio", "size": 16},{"name": "Aer", "size": 8},{"name": "Cognitio", "size": 8}]
+    "name": "Ichor",
+    "input": [{"name": "minecraft:nether_star/0", "size": 1},{"name": "gregtech:gt.metaitem.02/29500", "size": 1},{"name": "ThaumicTinkerer:kamiResource/6", "size": 1},{"name": "minecraft:ender_eye/0", "size": 1},{"name": "ThaumicTinkerer:kamiResource/7", "size": 1}],
+    "aspects": [{"name": "gaseousspiritusessentia", "size": 64},{"name": "gaseoushumanusessentia", "size": 32},{"name": "gaseousluxessentia", "size": 32},{"name": "gaseousalienisessentia", "size": 16},{"name": "gaseousordoessentia", "size": 16}]
   },
-  { 
-    "name": "Crystal Cluster",
-    "input": [{"name": "Etherial Blood Stone", "size": 1},{"name": "Life Shard", "size": 5},{"name": "Soul Shard", "size": 5}],
-    "aspects": [{"name": "Potentia", "size": 72},{"name": "Victus", "size": 64},{"name": "Spiritus", "size": 64},{"name": "Praecantatio", "size": 32},{"name": "Tenebrae", "size": 32},{"name": "Alienis", "size": 16},{"name": "Cognitio", "size": 16}]
+  {
+    "name": "Block of Ichorium",
+    "input": [{"name": "dreamcraft:tile.Mytryl/0", "size": 1},{"name": "gregtech:gt.metaitem.01/11978", "size": 2},{"name": "AWWayofTime:bloodMagicBaseItems/28", "size": 1},{"name": "ThaumicTinkerer:kamiResource/0", "size": 2},{"name": "AWWayofTime:standardBindingAgent/0", "size": 1},{"name": "AWWayofTime:bloodMagicBaseItems/29", "size": 1},{"name": "AWWayofTime:bloodMagicBaseAlchemyItems/4", "size": 1}],
+    "aspects": [{"name": "gaseousvictusessentia", "size": 64},{"name": "gaseousfamesessentia", "size": 48},{"name": "gaseouspraecantatioessentia", "size": 32},{"name": "gaseousinfernusessentia", "size": 24},{"name": "gaseousalienisessentia", "size": 16},{"name": "gaseoussuperbiaessentia", "size": 16},{"name": "gaseousterraessentia", "size": 8}]
   }
 ]
 ```
  - name - используется только для отображения на экране
- - input.name - имя предмета, такое же как в NEI, используется для сверки предметов в рецепете
- - aspects.name - имя аспекта, такое же как в NEI, используется для сверки аспектов по рецепту
+ - input.name - имя предмета, в формате name/damage, используется для сверки предметов в рецепете
+ - aspects.name - имя аспекта, см. файл essentia.json, используется для сверки аспектов по рецепту и для заказа
+## Описание эссенций essenti.json
+Описание должно быть полным сразу из поставки. Но может редактироваться с целью перевода
+```json
+{
+  "gaseousterraessentia": {"label": "Terra", "aspect": "terra"},
+  "gaseousordoessentia": {"label": "Ordo", "aspect": "ordo"}
+}
+```
+ - идентификатор - Идентификатор эссенции (name в МЕ). Думаю очевидно для чего оно нужно
+ - идентификатор.label - Отображаемое имя эссенции. Используется только для отображения на экране, можно писать что угодно
+ - идентификатор.aspect - имя аспекта для поиска рецепта в МЕ. Не стоит редактировать, по нему идёт поиск рецепта
 ## Установка программы:
 Для установки программы необходимо скачать на компьютер файлы: json.lua, ra_gui.lua, recipes.json, runic_matrix.lua 
 Скачать можно имея internet card при помощи команд:
 ```bash
 wget https://raw.githubusercontent.com/Rikenbacker/gt_oc_infusion/main/json.lua json.lua 
 wget https://raw.githubusercontent.com/Rikenbacker/gt_oc_infusion/main/ra_gui.lua ra_gui.lua 
-wget https://raw.githubusercontent.com/Rikenbacker/gt_oc_infusion/main/recipes.json recipes.json 
-wget https://raw.githubusercontent.com/Rikenbacker/gt_oc_infusion/main/runic_matrix.lua runic_matrix.lua 
+wget https://raw.githubusercontent.com/Rikenbacker/gt_oc_infusion/main/recipes.json recipes.json
+wget https://raw.githubusercontent.com/Rikenbacker/gt_oc_infusion/main/essentia.json essentia.json
+wget https://raw.githubusercontent.com/Rikenbacker/gt_oc_infusion/main/runic_matrix.lua runic_matrix.lua
 ```
 либо вручную.
 ## Запуск 
