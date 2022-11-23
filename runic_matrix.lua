@@ -115,7 +115,7 @@ function Tools.new()
         local values = obj[transposer].getAllStacks(settings.inputSide).getAll()
         for i = 0, #values do
             if values[i].size ~= nil then
-                table.insert(items, {name = values[i].label, size = values[i].size, position = i})
+                table.insert(items, {name = values[i].name .. ":" .. values[i].maxDamage, size = values[i].size, position = i})
             end
         end
         
