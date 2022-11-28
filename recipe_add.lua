@@ -1,256 +1,294 @@
---Ёбаный пиздец тут в коде, но нужно разобраться как выдёргивать из шаблона ингридиенты, как красиво в интерфейсе реализовать подбор аспектов
-
 local component = require("component")
-local s = require("sides")
-local event = require("event")
-local computer = require("computer")
+local json = require('json')
 
-local arguments_as_a_table = {...}
+local settings = {
+  recipesFileName = "recipes.json",
+  essentiaFileName = "essentia.json",
+  maxPatternsCount = 36
+}
 
-
-local adresses = {}
---[[
-Code Made by: Lewissaber#7231
-
-Settuping:
-Put database(tier 2+) in random adapter
-Place Interfaces u want to copy patterns from, connect them with adapter
-Add their adresses and number of them to config 
-in interface slot #36 put indicator pattern
-place interfaces you want to copy TO
-fill them with random pattern(pattern need to have 1 input and 1 output(like 1 oak plank makes 1 mushroom)) and place indicator pattern in slot 36
-indicator pattern is pattern that you use to connect your interfaces, interfaces with same indicator pattern will share same recipes(indicator item is pattern output)
-
-program call examples:
- copypasеe a  b c
- copypaste a b c
- a is start of copying array
- b is end of copy array( example a = 2, b = 5, it will copy all patterns from slot 2 to slot 5), if b is not set it will only copy pattern a
- c is select set of interfaces to copy(set is based on how u put addresses, first adresse will be 1), if set to 0 will copy in all interfaces
- if b < 0 it will turn on erase mode
- erase mode : 
- pattern a in c set of interfaces will be erased
- use it before upating pattern to remove leftovers from last pattern
-
-
-
-
-
-Russiant translation is made by Кетцаль#0802
-
-
-
-Настройка:
-Поместите базу данных (уровень 2+) в любой адаптер.
-Поместите интерфейсы, с которых вы хотите копировать шаблоны, соедините их с адаптером.
-Добавьте их адреса и их количество в конфиг 
-в слот интерфейса #36 поместите индикаторный шаблон
-поставте интерфейсы, В которые вы хотите скопировать 
-заполните их случайным паттерном (паттерн должен иметь 1 вход и 1 выход (например, 1 дубовая доска делает 1 гриб)) и поместите индикаторный паттерн в слот 36
-индикаторный шаблон - это шаблон, который вы используете для соединения ваших интерфейсов, интерфейсы с одинаковым индикаторным шаблоном будут иметь одинаковые рецепты (индикаторный элемент - это выход шаблона)
-
-примеры вызова программ:
- copypaste a b c
- copypaste a b c
-a - начало копируемого массива
-b - конец массива копирования (пример a = 2, b = 5, это скопирует все рецепты с 2 до 5 слота), если b не задано, то будет скопирована лишь 1 рецепт "а"
-c - выбор набора интерфейсов для копирования (набор зависит от того, как вы расположили адреса, первый адрес будет 1), если установить значение 0, то будут скопированы все интерфейсы. 
-если b < 0, включается режим стирания
- режим стирания : 
- все шаблоны начиная с "a" до "с" будут стерты в интерфейсе
- Используйте этот режим перед обновлением шаблонов, чтобы удалить остатки предыдущих записей
-
---]]
-
-
-
---config
-local number = 2 -- number of interfaces
- adresses = {"9c7a","f711"} --addresses of patter source interfaces
-local slot = 36 --slot of indicator pattern
-
------
-
-
-local database = component.database
-local db = database.address
-local ifaceadress = component.me_interface
-local mainfaces = {}
-local proxies = {}
-local interface
-local pattern
-local input = {}
-local output = {}
-local inputlength = 0
-local outputlength = 0
-local item
-local maxpattern
-local minpattern
-local mode 
-local placeholderitems = {}
-
-if arguments_as_a_table[3] == nil then
-
-  maxpattern = tonumber(arguments_as_a_table[1])
-  minpattern = maxpattern 
-  
-  mode = tonumber(arguments_as_a_table[2])
-else
-
-  minpattern = tonumber(arguments_as_a_table[1])
-  maxpattern = tonumber(arguments_as_a_table[2])
-  mode = tonumber(arguments_as_a_table[3])
+local Essentia = {}
+function Essentia.new()
+	local essentia = {}
+	local obj = {}
+	
+	local f = io.open(settings.essentiaFileName, "r")
+	if f~=nil then 
+		essentia = json.decode(f:read("*all"))
+		io.close(f) 
+	end
+	
+	function obj.getLabel(name)
+		if (essentia[name]) == nil then
+			return name
+		else
+			return essentia[name].label
+		end
+	end
+	
+	function obj.getAspect(name)
+		if (essentia[name]) == nil then
+			return name
+		else
+			return essentia[name].aspect
+		end
+	end
+	
+	function obj.getCount()
+		return #essentia
+	end
+	
+	function obj.getByPartName(partName)
+		local result = {}
+		
+		for key, value in pairs(essentia) do
+			if type(value) == "table" then
+				if string.find(value.label, partName) ~= nil or string.find(value.aspect, partName) ~= nil then
+					table.insert(result, key)
+				end
+			end
+		end
+		
+		return result
+	end
+	
+	return obj
 end
-if maxpattern < 0 then maxpattern = minpattern end
---getting main interfaces
-for i = 1, number do
-  
-  mainfaces[i] = component.get(adresses[i])
-  mainfaces[mainfaces[i]] = 1
-  mainfaces[i] = component.proxy(mainfaces[i])
- proxies[i] = {}
- mainfaces[i].storeInterfacePatternOutput(slot,1,db,1)
- item = database.get(1)
- placeholderitems[i] = item.label
 
-  
+local Recipes = {}
+function Recipes.new()
+   local recipes = {}
+   local obj = {}
+
+   local f = io.open(settings.recipesFileName, "r")
+   if f~=nil then 
+		recipes = json.decode(f:read("*all"))
+		io.close(f) 
+	end	   
+	
+	function obj.getCount()
+		return #recipes
+	end
+	
+	function obj.get(n)
+		return recipes[n]
+	end
+	
+	function obj.findRecipe(inputItems)
+		for i = 1, #recipes do
+			if #recipes[i].input == #inputItems then
+				local fullMatch = true
+				for j = 1, #inputItems do
+					if inputItems[j].name ~= recipes[i].input[j].name or inputItems[j].size ~= recipes[i].input[j].size then
+						fullMatch = false
+					end
+				end
+				
+				if fullMatch == true then
+					return recipes[i]
+				end
+			end
+		end
+		return nil
+	end
+	
+	function obj.insert(name, inputs, essentias)
+		table.insert(recipes, {name = name, input = inputs, aspects = essentias})
+		
+		local f = io.open(settings.recipesFileName, "w")
+		if f~=nil then 
+			f:write(json.encode(recipes))
+			io.close(f) 
+		end
+	end
+	
+	return obj
 end
 
 
+local Tools = {}
+function Tools.new()
+	local obj = {}
+	local interface = "me_interface"
+	local database = "database"
 
+	for address, type in component.list() do
+		if type == interface and obj[interface] == nil then
+			obj[interface] = component.proxy(address)
+		elseif type == database and obj[database] == nil then
+			obj[database] = component.proxy(address)
+		end
+	end
+	
+	function obj.getInterface()
+		return obj[interface]
+	end
 
----Sorting all interfaces
-for ifaceadress, me_interface in pairs(component.list("me_interface", true)) do
-interface = component.proxy(ifaceadress)
-if mainfaces[interface.address] ~= 1  then
-  interface.storeInterfacePatternOutput(slot,1,db,1)
-   item = database.get(1)
-   for i = 1, number do
-    if item.label == placeholderitems[i] then
-    table.insert(proxies[i],component.proxy(ifaceadress))
-    
-   end
-   end
-
+	function obj.getDatabase()
+		return obj[database]
+	end
+	
+	function obj.makeLabel(item)
+		return item.name .. "/" .. item.damage
+	end
+	
+	function obj.loadRecipes(recipes)
+		local patterns = {}
+		
+		-- Получаю список шаблонов и краткую информацию для дальнейшего заполнения
+		for patternSlot = 1, settings.maxPatternsCount do
+			local pattern = obj[interface].getInterfacePattern(patternSlot)
+			if pattern ~= nil then
+				-- Заполняю входные данные те что можно без использовани БД
+				local inputs = {}
+				for i = 1, #pattern.inputs do
+					if pattern.inputs[i].count ~= nil then
+						table.insert(inputs, {position = i, size = pattern.inputs[i].count})
+					end
+				end
+				
+				-- Ищу певый заполненный выходной слот чтобы оттуда спереть наименование результата
+				local outputSlot = nil
+				for i = 1, #pattern.outputs do
+					if pattern.outputs[i].count ~= nil and outputSlot == nil then
+						outputSlot = i
+					end
+				end
+				
+				table.insert(patterns, {slot = patternSlot, name = pattern.outputs[outputSlot].name, inputSlots = inputs})
+			end
+		end
+		print("Patterns: " .. #patterns)
+		
+		-- Дозаполняю рецепты по данным через БД
+		for _, recipe in pairs(patterns) do
+			io.write(recipe.name)		
+			local items = {}
+			
+			for i = 1, #recipe.inputSlots do
+				obj[interface].storeInterfacePatternInput(recipe.slot, recipe.inputSlots[i].position, obj[database].address, 1)
+				table.insert(items, {name = obj.makeLabel(obj[database].get(1)), size = recipe.inputSlots[i].size})
+			end
+			
+			recipe.readRecipe = items
+			recipe.foundRecipe = recipes.findRecipe(items)
+			if recipe.foundRecipe == nil then
+				print(": New")
+			else
+				print ": exists"
+			end
+		end
+		
+		return patterns		
+	end
+	
+	return obj
 end
 
-
+function showListRecipes(recipes)
+	for i = 1, recipes.getCount() do
+		print(recipes.get(i).name)
+	end
 end
 
-
-local function rewrite(miface,array)
-for k = minpattern , maxpattern do
-
-  --geting input/output size
-    pattern  = miface.getInterfacePattern(k)
-    for k=1 , #pattern.inputs do
-     if pattern.inputs[k].count == nil then
-      break
-     end
-      inputlength = inputlength + 1
-        input[k] = pattern.inputs[k].count     
-     
-    end
-    
-      for k=1 , #pattern.outputs do
-     
-        outputlength = outputlength + 1
-         output[k] = pattern.outputs[k].count     
-        
-      end
-     
-
-  --builddatabase from pattern
-for p = 1 , inputlength do
-
-
-  miface.storeInterfacePatternInput(k,p,db,p)
-  
+function addNewRecipe(pattern, recipes, essentia)
+	local finished = false
+	local aspects = {}
+	
+	while finished == false do
+		print(pattern.name .." now needed ".. #aspects .. " types of essentia.")
+		print("To add aspect to recipe type begining of the aspect name (like \"praec\" or \"victu\") and press enter. Or input empty string for finishing.")
+		io.flush()
+		local aspectName = io.read("*l")
+		if aspectName ~= "" then
+			local essentias = essentia.getByPartName(aspectName)
+			if #essentias == 0 then
+				print("Matches not found. Pleace try again.")
+			else
+				for i, id in pairs(essentias) do
+					print("("..i..") " .. essentia.getLabel(id))
+				end
+				print("(0) for choose another")
+				local num = io.read("*n")
+				io.read()
+				if num < 0 or num > #essentias then
+					print("Wrong number.")
+				elseif num ~= 0 then
+					local id = essentias[num]
+					print("How much ".. essentia.getLabel(id) .. "?")
+					local count = io.read("*n")
+					io.read()
+					table.insert(aspects, {name = id, size = count})
+				end
+			end
+		else -- aspectName ~= ""
+			print("Write new recipe? Y/n")
+			local answer = io.read("*l")
+			if answer == "Y" or answer == "y" then
+				recipes.insert(pattern.name, pattern.readRecipe, aspects)
+			end
+			finished = true
+		end
+	end
 end
 
+function scanPatterns(tools, recipes, essentia)
+	patterns = tools.loadRecipes(recipes)
 
-for p = 1,outputlength do
- miface.storeInterfacePatternOutput(k,p,db,inputlength+p)
-end
-for i in pairs(array) do
-   interface = array[i]
-  for b = 1, inputlength do
-        
-interface.setInterfacePatternInput(k,db,b,input[b],b)
-  end
-    for i = 1, outputlength do
-      interface.setInterfacePatternOutput(k,db,inputlength+i,output[i], i)
-    end
-  end
-  print("pattern ".. k .. " done")
-  --clear variables
-  inputlength = 0
-  outputlength = 0
-  input = {}
-  output = {}
-    end
-  print("Complete")
-  end
-
-
-local function earase(miface,array)
-for k = minpattern , maxpattern do
-
-
-  --geting input/output size
-    pattern  = miface.getInterfacePattern(k)
-    for k=1 , #pattern.inputs do
-     if pattern.inputs[k].count == nil then
-      break
-     end
-      inputlength = inputlength + 1
-     
-    end
-    
-      for k=1 , #pattern.outputs do
-        outputlength = outputlength + 1
-        
-      end
-      
-      miface.storeInterfacePatternOutput(slot,1,db,1)
-      
-     for i in pairs(array) do
-      
-   interface = array[i]
-   interface.setInterfacePatternInput(k,db,1,1,1)
-   interface.setInterfacePatternOutput(k,db,1,1,1)
-
-if inputlength > 1 then
-  for b = 2, inputlength do
-    interface.clearInterfacePatternInput(k, 2)
-   
-   
-  end
-end
-  if outputlength >  1 then
-    for i = 2, outputlength do
-      interface.clearInterfacePatternOutput(k, 2)
-    end
-  end
+	if #patterns == 0 then
+		print("Patterns not fount.")
+		return
+	end
+	
+	for _, pattern in pairs(patterns) do
+		if pattern.foundRecipe == nil then
+			print("New recipe found: " .. pattern.name .. ". Do you want to add it? Y/n")
+			result = io.read("*l")
+			if result == "Y" or result == "y" then
+				addNewRecipe(pattern, recipes, essentia)
+			end
+		end
+	end
 end
 
-     
+function main()
+	local tools = Tools.new()
+	local recipes = Recipes.new()
+	local essentia = Essentia.new()
 
-  
+	if tools.getInterface() ~= nil then
+		print("ME Interface found")
+	else
+		print("ERROR: ME Interface not found!")
+		return 1
+	end
+	
+	if tools.getDatabase() ~= nil then
+		print("Database found")
+	else
+		print("ERROR: Database not found!")
+		return 1
+	end	
+	
+	print("Recipes loaded:", recipes.getCount())
+	
+	print("")
+	
+	local result = ""
+	
+	while result ~= "0" do
+		print("1 - Show recipes list")
+		print("2 - Scan interface for new recipes")
+		print("0 - exit")
+				
+		result = io.read("*l")
+		
+		if result == "1" then
+			showListRecipes(recipes)
+		elseif result == "2" then
+			scanPatterns(tools, recipes, essentia)
+		end
+	end
 end
-end
-if tonumber(arguments_as_a_table[2]) < 0 then
-  earase(mainfaces[mode],proxies[mode])
-else
 
-  if mode == 0 then
-    for i = 1, number do
-      rewrite(mainfaces[i],proxies[i])
-    end
-    
-  else
- 
-      rewrite(mainfaces[mode],proxies[mode])
-  end
-end
-  
+main()
