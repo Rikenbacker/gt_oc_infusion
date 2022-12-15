@@ -1,3 +1,7 @@
+-- Автоматизированная инфузия
+-- Версия 1.0.5
+-- Автор Rikenbacker
+
 local component = require("component")
 local sides = require("sides")
 local event = require("event")
@@ -8,7 +12,7 @@ local gpu = component.gpu
 
 local settings = {
   refreshInterval = 1.0,         -- Время обновления в секундах основного цикла
-  refreshPiedistalInterval = 1,  -- Время обновления сундука с материалом для инфузии в секундах. 
+  refreshPiedistalInterval = 2,  -- Время обновления сундука с материалом для инфузии в секундах. 
   refreshMonitorInterval = 0.4,  -- Время обновления экрана
   inputSide = sides.north,
   altarSide = sides.top,
@@ -17,6 +21,7 @@ local settings = {
   redstonePiedestalSide = sides.south,
   redstoneInfusionSide = sides.north,
   recipesFileName = "recipes.json",
+  essentiaFileName = "essentia.json",
   minimumVisCount = 10
 }
 
@@ -36,15 +41,51 @@ local status = {
     message = nil,               -- Сообщение для отображения
     crafting = nil,              -- Выполняемый рецепт
     craftingName = nil,          -- Описание выполняемого рецепта
-    shootDown = false            -- Флаг завершения потока
+    shootDown = false,           -- Флаг завершения потока
+    debugInfo = nil
 }
 
 local textLines = {
     "Current status: $stage:s,%s$",
     "Recipe: $recipeName:s,%s$",
     "$message$",
-    "$craftingName$"
+    "$craftingName$"--[[,
+    "$debugInfo$"
+]]--
 }
+
+local Essentia = {}
+function Essentia.new()
+    local essentia = {}
+    
+    local f = io.open(settings.essentiaFileName, "r")
+    if f~=nil then 
+        essentia = json.decode(f:read("*all"))
+        io.close(f) 
+    end
+    
+    function essentia.getLabel(name)
+        if (essentia[name]) == nil then
+            return name
+        else
+            return essentia[name].label
+        end
+    end
+    
+    function essentia.getAspect(name)
+        if (essentia[name]) == nil then
+            return name
+        else
+            return essentia[name].aspect
+        end
+    end
+    
+    function essentia.getCount()
+        return #essentia
+    end
+    
+    return essentia
+end
 
 local Recipes = {}
 function Recipes.new()
@@ -110,48 +151,64 @@ function Tools.new()
         return obj[redstone]
     end    
     
+    function obj.makeLabel(item)
+        return item.name .. "/" .. item.damage
+    end
+    
     function obj.getInput()
         local items = {}
         local values = obj[transposer].getAllStacks(settings.inputSide).getAll()
         for i = 0, #values do
             if values[i].size ~= nil then
-                table.insert(items, {name = values[i].label, size = values[i].size, position = i})
+                table.insert(items, {name = obj.makeLabel(values[i]), size = values[i].size, position = i})
             end
         end
         
         return items
     end
     
-    function obj.craftingAspect(aspect, count)
+    function obj.checkAltar()
+        local values = obj[transposer].getAllStacks(settings.altarSide).getAll()
+        for i = 0, #values do
+            if values[i].size ~= nil then
+                return true
+            end
+        end
+        
+        return false
+    end 
+    
+    function obj.craftingAspect(aspect, count, essentia)
         if status.craft ~= nil then
             if status.craft.isCanceled() == true then 
-                status.craftingName = "Can't craft " .. aspect .. ". Recipe canceled."
+                status.craftingName = "Can't craft " .. essentia.getLabel(aspect) .. ". Recipe canceled."
                 status.craft = nil
             elseif status.craft.isDone() == true then 
                 status.craftingName = nil
                 status.craft = nil
             end
         else
-            local craft = obj[interface].getCraftables({label = aspect, name = "thaumicenergistics:crafting.aspect"})
+            local craft = obj[interface].getCraftables({aspect = essentia.getAspect(aspect), name = "thaumicenergistics:crafting.aspect"})
             if craft[1] == nil then
-                status.craftingName = "Can't craft " .. aspect .. ". No recipe."
+                status.craftingName = "Can't craft " .. essentia.getLabel(aspect) .. ". No recipe."
                 return nil
             end
         
             status.craft = craft[1].request(count)
-            status.craftingName = "Crafting " .. aspect .. " (" .. count .. ")"
+            status.craftingName = "Crafting " .. essentia.getLabel(aspect) .. " (" .. count .. ")"
         end
     end
     
-    function obj.checkAspects(recipe)
+    function obj.checkAspects(recipe, essentia)
         local aspects = obj[interface].getEssentiaInNetwork()
-        
+
         local fullMatch = true
         for i = 1, #recipe.aspects do
             local match = false
             local count = recipe.aspects[i].size
             for j = 1, #aspects do
-                if aspects[j].label == recipe.aspects[i].name .. " Gas" then
+            
+                if aspects[j].name == recipe.aspects[i].name then
                     if aspects[j].amount >= recipe.aspects[i].size then
                         match = true
                     else
@@ -162,8 +219,8 @@ function Tools.new()
             
             if match == false then
                 fullMatch = false
-                status.message = "&yellow;Not enought: " .. recipe.aspects[i].name .. " (" .. count .. ")"
-                obj.craftingAspect(recipe.aspects[i].name, count)
+                status.message = "&yellow;Not enought: " .. essentia.getLabel(recipe.aspects[i].name) .. " (" .. count .. ")"
+                obj.craftingAspect(recipe.aspects[i].name, count, essentia)
             end
         end
 
@@ -206,7 +263,7 @@ function Tools.new()
     
         local isDone = false
         if obj[transposer].getStackInSlot(settings.altarSide, 1) ~= nil then
-            if obj[transposer].getStackInSlot(settings.altarSide, 1).label ~= itemName then
+            if obj.makeLabel(obj[transposer].getStackInSlot(settings.altarSide, 1)) ~= itemName then
                 isDone = true
             end    
         else 
@@ -238,25 +295,29 @@ function Tools.new()
     return obj
 end
 
-function mainLoop(tools, recipes)
+function mainLoop(tools, recipes, essentia)
     while status.shootDown == false do
         if status.stage == stages.waitInput then
-            status.inputItems = tools.getInput()
-            if #status.inputItems > 0 then
-                status.recipe = recipes.findRecipe(status.inputItems)
-                if status.recipe == nil then
-                    status.message = "&red;Error: Recipe not found!"
-                else
-                    status.recipeName = "&green;" .. status.recipe.name
-                    status.stage = stages.waitAspects
+            if tools.checkAltar() == true then
+                status.message = "&red;ALtar is busy!"
+            else
+                status.inputItems = tools.getInput()
+                if #status.inputItems > 0 then
+                    status.recipe = recipes.findRecipe(status.inputItems)
+                    if status.recipe == nil then
+                        status.message = "&red;Error: Recipe not found!"
+                    else
+                        status.recipeName = "&green;" .. status.recipe.name
+                        status.stage = stages.waitAspects
+                    end
+                else 
+                    status.message = nil
                 end
-            else 
-                status.message = nil
             end
         end
         
         if status.stage == stages.waitAspects then
-            if tools.checkAspects(status.recipe) == true then
+            if tools.checkAspects(status.recipe, essentia) == true then
                 status.stage = stages.transferItems
                 status.crafting = nil
                 status.message = nil
@@ -284,7 +345,8 @@ end
 function main()
     local tools = Tools.new()
     local recipes = Recipes.new()
-    
+    local essentia = Essentia.new()
+
     if tools.getInterface() ~= nil then
         print("ME Interface found")
     else
@@ -310,7 +372,7 @@ function main()
     
     thread.create(
       function()
-        mainLoop(tools, recipes)
+        mainLoop(tools, recipes, essentia)
       end
     ):detach()
     

@@ -1,33 +1,54 @@
 [
-    { "name": "Test",
-        "input": [{"name": "Blood Rune", "size": 2}],
-        "aspects": [{"name": "Perditio", "size": 64},{"name": "Motus", "size": 128}, {"name": "Limus", "size": 20}]},
-    { "name": "Ritual Stone",
-        "input": [{"name": "Imperfect Ritual Stone", "size": 1},{"name": "Terrae", "size": 2},{"name": "Obsidian", "size": 4},{"name": "Reinforced Slate", "size": 4}],
-        "aspects": [{"name": "Terra", "size": 24},{"name": "Ignis", "size": 18},{"name": "Tenebrae", "size": 12},{"name": "Praecantatio", "size": 6},{"name": "Aer", "size": 3}]
-    },
-    { "name": "Ichor",
-        "input": [{"name": "Nether Star", "size": 1},{"name": "Flawless Diamond", "size": 1},{"name": "Nether Shard", "size": 1},{"name": "Eye of Ender", "size": 1},{"name": "Ender Shard", "size": 1}],
-        "aspects": [{"name": "Spiritus", "size": 64},{"name": "Humanus", "size": 32},{"name": "Lux", "size": 32},{"name": "Alienis", "size": 16},{"name": "Ordo", "size": 16}]
-    },
-    { "name": "Silverwood rod",
-        "input": [{"name": "Silverwood Log", "size": 1},{"name": "Air Crystal Cluster", "size": 1},{"name": "Fire Crystal Cluster", "size": 1},{"name": "Water Crystal Cluster", "size": 1},{"name": "Earth Crystal Cluster", "size": 1},{"name": "Order Crystal Cluster", "size": 1},{"name": "Entropy Crystal Cluster", "size": 1},{"name": "Mixed Crystal Cluster", "size": 1}],
-        "aspects": [{"name": "Aer", "size": 48},{"name": "Aqua", "size": 48},{"name": "Ignis", "size": 48},{"name": "Ordo", "size": 48},{"name": "Perditio", "size": 48},{"name": "Praecantatio", "size": 48},{"name": "Terra", "size": 48}]
-    },
-    { "name": "Charged Void metal Cap",
-        "input": [{"name": "Inert Void metal Cap", "size": 1},{"name": "Salis Mundus", "size": 3},{"name": "Void Seed", "size": 3}],
-        "aspects": [{"name": "Alienis", "size": 32},{"name": "Auram", "size": 32},{"name": "Potentia", "size": 32},{"name": "Vacuos", "size": 32}]
-    },
-    { "name": "Rune of the Orb",
-        "input": [{"name": "Demonic Blood Stone", "size": 3},{"name": "Demonic Slate", "size": 4},{"name": "Potentia", "size": 2},{"name": "Empty Core", "size": 2}],
-        "aspects": [{"name": "Potentia", "size": 32},{"name": "Victus", "size": 24},{"name": "Motus", "size": 16},{"name": "Lucrum", "size": 8},{"name": "Praecantatio", "size": 4}]
-    },
-    { "name": "Master Ritual Stone",
-        "input": [{"name": "Ritual Stone", "size": 1},{"name": "Terrae", "size": 2},{"name": "Obsidian", "size": 4},{"name": "Reinforced Blood Stone", "size": 4}],
-        "aspects": [{"name": "Terra", "size": 36},{"name": "Ignis", "size": 24},{"name": "Tenebrae", "size": 16},{"name": "Praecantatio", "size": 16},{"name": "Aer", "size": 8},{"name": "Cognitio", "size": 8}]
-    },
-    { "name": "Crystal Cluster",
-        "input": [{"name": "Etherial Blood Stone", "size": 1},{"name": "Life Shard", "size": 5},{"name": "Soul Shard", "size": 5}],
-        "aspects": [{"name": "Potentia", "size": 72},{"name": "Victus", "size": 64},{"name": "Spiritus", "size": 64},{"name": "Praecantatio", "size": 32},{"name": "Tenebrae", "size": 32},{"name": "Alienis", "size": 16},{"name": "Cognitio", "size": 16}]
-    }    
+  {"input":[{"name":"Blood Rune","size":2}],
+	"name":"Test",
+	"aspects":[{"name":"gaseousperditioessentia","size":64},{"name":"gaseousmotusessentia","size":128},{"name":"gaseouslimusessentia","size":20}]
+  },
+  {"input":[{"name":"minecraft:nether_star/0","size":1},{"name":"gregtech:gt.metaitem.02/29500","size":1},{"name":"ThaumicTinkerer:kamiResource/6","size":1},{"name":"minecraft:ender_eye/0","size":1},{"name":"ThaumicTinkerer:kamiResource/7","size":1}],
+    "name":"Ichor",
+	"aspects":[{"name":"gaseousspiritusessentia","size":64},{"name":"gaseoushumanusessentia","size":32},{"name":"gaseousluxessentia","size":32},{"name":"gaseousalienisessentia","size":16},{"name":"gaseousordoessentia","size":16}]
+  },
+  {"input":[{"name":"dreamcraft:tile.Mytryl/0","size":1},{"name":"gregtech:gt.metaitem.01/11978","size":2},{"name":"AWWayofTime:bloodMagicBaseItems/28","size":1},{"name":"ThaumicTinkerer:kamiResource/0","size":2},{"name":"AWWayofTime:standardBindingAgent/0","size":1},{"name":"AWWayofTime:bloodMagicBaseItems/29","size":1},{"name":"AWWayofTime:bloodMagicBaseAlchemyItems/4","size":1}],
+    "name":"Block of Ichorium",
+	"aspects":[{"name":"gaseousvictusessentia","size":64},{"name":"gaseousfamesessentia","size":48},{"name":"gaseouspraecantatioessentia","size":32},{"name":"gaseousinfernusessentia","size":24},{"name":"gaseousalienisessentia","size":16},{"name":"gaseoussuperbiaessentia","size":16},{"name":"gaseousterraessentia","size":8}]
+  },
+  {"input":[{"name":"BloodArsenal:blood_stone/4","size":1},{"name":"AWWayofTime:bloodMagicBaseItems/28","size":5},{"name":"AWWayofTime:bloodMagicBaseItems/29","size":5}],
+    "name":"Crystal Cluster",
+	"aspects":[{"name":"gaseouspotentiaessentia","size":72},{"name":"gaseousvictusessentia","size":64},{"name":"gaseousspiritusessentia","size":64},{"name":"gaseouspraecantatioessentia","size":32},{"name":"gaseoustenebraeessentia","size":32},{"name":"gaseousalienisessentia","size":16},{"name":"gaseouscognitioessentia","size":16}]
+  },
+  {"input":[{"name":"AWWayofTime:imperfectRitualStone/0","size":1},{"name":"AWWayofTime:terrae/0","size":2},{"name":"minecraft:obsidian/0","size":4},{"name":"AWWayofTime:reinforcedSlate/0","size":4}],
+    "name":"Ritual Stone",
+	"aspects":[{"name":"gaseousterraessentia","size":24},{"name":"gaseousignisessentia","size":18},{"name":"gaseoustenebraeessentia","size":12},{"name":"gaseouspraecantatioessentia","size":6},{"name":"gaseousaeressentia","size":3}]
+  },
+  {"input":[{"name":"AWWayofTime:reinforcedSlate/0","size":1},{"name":"witchery:divinerwater/0","size":1},{"name":"IC2:itemCellEmpty/1","size":4},{"name":"AWWayofTime:aquasalus/0","size":4}],
+    "name":"Water Sigil",
+	"aspects":[{"name":"gaseousaquaessentia","size":40},{"name":"gaseousterraessentia","size":32},{"name":"gaseouspraecantatioessentia","size":24},{"name":"gaseousinstrumentumessentia","size":16},{"name":"gaseousmetallumessentia","size":8}]
+  },
+  {"input":[{"name":"Thaumcraft:blockMagicalLog/1","size":1},{"name":"Thaumcraft:blockCrystal/0","size":1},{"name":"Thaumcraft:blockCrystal/1","size":1},{"name":"Thaumcraft:blockCrystal/2","size":1},{"name":"Thaumcraft:blockCrystal/3","size":1},{"name":"Thaumcraft:blockCrystal/4","size":1},{"name":"Thaumcraft:blockCrystal/5","size":1},{"name":"Thaumcraft:blockCrystal/6","size":1}],
+    "name":"Silverwood Rod",
+	"aspects":[{"name":"gaseousaeressentia","size":48},{"name":"gaseousaquaessentia","size":48},{"name":"gaseousignisessentia","size":48},{"name":"gaseousordoessentia","size":48},{"name":"gaseousperditioessentia","size":48},{"name":"gaseouspraecantatioessentia","size":48},{"name":"gaseousterraessentia","size":48}]
+  },
+  {"input":[{"name":"AWWayofTime:reinforcedSlate/0","size":1},{"name":"AWWayofTime:simpleCatalyst/0","size":1},{"name":"AWWayofTime:aether/0","size":1},{"name":"AWWayofTime:terrae/0","size":1},{"name":"AWWayofTime:crystallos/0","size":1},{"name":"AWWayofTime:sanctus/0","size":1},{"name":"AWWayofTime:magicales/0","size":1},{"name":"AWWayofTime:crepitous/0","size":1},{"name":"AWWayofTime:incendium/0","size":1},{"name":"AWWayofTime:aquasalus/0","size":1},{"name":"AWWayofTime:tennebrae/0","size":1}],
+    "name":"Amorphic Catalyst",
+	"aspects":[{"name":"gaseousaquaessentia","size":16},{"name":"gaseousignisessentia","size":16},{"name":"gaseousterraessentia","size":16},{"name":"gaseousaeressentia","size":16},{"name":"gaseousordoessentia","size":16},{"name":"gaseousperditioessentia","size":16}]
+  },
+  {"input":[{"name":"Thaumcraft:WandCap/8","size":1},{"name":"Thaumcraft:ItemResource/14","size":3},{"name":"Thaumcraft:ItemResource/17","size":3}],
+    "name":"Charged Void metal Cap",
+	"aspects":[{"name":"gaseousalienisessentia","size":32},{"name":"gaseousauramessentia","size":32},{"name":"gaseouspotentiaessentia","size":32},{"name":"gaseousvacuosessentia","size":32}]
+  },
+  {"input":[{"name":"minecraft:diamond_block/0","size":1},{"name":"BloodArsenal:blood_infused_diamond_bound/0","size":1},{"name":"BloodArsenal:blood_infused_diamond_bound/0","size":1},{"name":"BloodArsenal:blood_infused_diamond_bound/0","size":1},{"name":"BloodArsenal:blood_infused_diamond_bound/0","size":1},{"name":"BloodArsenal:blood_infused_diamond_bound/0","size":1},{"name":"BloodArsenal:blood_infused_diamond_bound/0","size":1},{"name":"BloodArsenal:blood_infused_diamond_bound/0","size":1},{"name":"BloodArsenal:blood_infused_diamond_bound/0","size":1},{"name":"BloodArsenal:blood_infused_diamond_bound/0","size":1}],
+    "name":"Blood Infused Diamond Block",
+	"aspects":[{"name":"gaseousaquaessentia","size":64},{"name":"gaseousignisessentia","size":48},{"name":"gaseousiraessentia","size":32},{"name":"gaseousvictusessentia","size":24},{"name":"gaseousalienisessentia","size":16},{"name":"gaseousperditioessentia","size":16}]
+  },
+  {"name":"Rune of the Orb",
+    "input":[{"name":"BloodArsenal:blood_stone/3","size":3},{"name":"AWWayofTime:demonicSlate/0","size":4},{"name":"AWWayofTime:bloodMagicBaseAlchemyItems/8","size":2},{"name":"AWWayofTime:bloodMagicBaseItems/1","size":2}],
+    "aspects":[{"name":"gaseouspotentiaessentia","size":32},{"name":"gaseousvictusessentia","size":24},{"name":"gaseousmotusessentia","size":16},{"name":"gaseouslucrumessentia","size":8},{"name":"gaseouspraecantatioessentia","size":4}]
+  },
+  {"name":"Master Ritual Stone",
+    "input":[{"name":"AWWayofTime:ritualStone/0","size":1},{"name":"AWWayofTime:terrae/0","size":2},{"name":"minecraft:obsidian/0","size":4},{"name":"BloodArsenal:blood_stone/1","size":4}],
+	"aspects":[{"name":"gaseousterraessentia","size":36},{"name":"gaseousignisessentia","size":24},{"name":"gaseoustenebraeessentia","size":16},{"name":"gaseouspraecantatioessentia","size":16},{"name":"gaseousaeressentia","size":8},{"name":"gaseouscognitioessentia","size":8}]
+  },
+  {"name":"Air Sigil",
+    "input":[{"size":1,"name":"AWWayofTime:demonicSlate/0"},{"size":2,"name":"minecraft:ghast_tear/0"},{"size":6,"name":"AWWayofTime:aether/0"},{"size":4,"name":"gregtech:gt.metaitem.01/30004"}],
+	"aspects":[{"size":64,"name":"gaseousvolatusessentia"},{"size":48,"name":"gaseousaeressentia"},{"size":32,"name":"gaseousmotusessentia"},{"size":24,"name":"gaseouspraecantatioessentia"},{"size":18,"name":"gaseousiteressentia"},{"size":12,"name":"gaseouspotentiaessentia"},{"size":6,"name":"gaseouscognitioessentia"}]
+  }
 ]
